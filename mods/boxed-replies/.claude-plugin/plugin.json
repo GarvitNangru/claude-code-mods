@@ -1,0 +1,22 @@
+{
+  "name": "boxed-replies",
+  "version": "0.1.0",
+  "description": "Draws Claude's answers in the terminal inside rounded boxes, so they stand apart from tool calls and short progress notes.",
+  "author": {
+    "name": "Garvit Nangru",
+    "url": "https://github.com/GarvitNangru"
+  },
+  "homepage": "https://github.com/GarvitNangru/claude-code-mods/tree/main/mods/boxed-replies",
+  "repository": "https://github.com/GarvitNangru/claude-code-mods",
+  "license": "MIT",
+  "keywords": ["replies", "readability", "terminal", "boxes", "layout"],
+  "userConfig": {
+    "boxes": {
+      "type": "string",
+      "title": "Replies to box",
+      "description": "answers boxes replies of more than a line or two and leaves one-line progress notes plain; all boxes every reply",
+      "default": "answers",
+      "options": ["answers", "all"]
+    }
+  }
+}

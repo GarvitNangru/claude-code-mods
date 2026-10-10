@@ -7,6 +7,7 @@ Mods and skins for [Claude Code](https://claude.com/claude-code). A mod is a sma
 | Mod | What it does |
 | --- | --- |
 | [Agent Monitor](mods/agent-monitor) | A progress bar above the prompt that fills as Claude works through a task, and a panel with the plan and every subagent's model, context use, estimated cost and run time. |
+| [Boxed Replies](mods/boxed-replies) | Draws Claude's answers in the terminal inside rounded boxes, so they stand apart from tool calls and short progress notes. |
 
 ## Skins
 
