@@ -1,49 +1,60 @@
 # Claude Code Mods
 
-Mods and skins for [Claude Code](https://claude.com/claude-code). A mod is a small add-on that changes what you see or can do inside Claude Code, such as a progress bar, a panel or a new command. A skin changes how it looks: its colors, and the terminal around it. Each one lives in its own folder and installs on its own, so you only take the ones you want.
+These are some things I thought I could build to make my experience better while using [Claude Code](https://claude.com/claude-code). I use it a lot, and a few things kept bugging me. The terminal was hard to read, everything Claude wrote looked the same, and I never really knew how far along it was in a task. So I started building small fixes for those, and this repo is where I keep them.
 
-## Mods
+There are two kinds of things in here. Mods change what you see or can do inside Claude Code, like a progress bar or a panel. Skins change how it looks, like the colors and the terminal around it. Each one is its own separate thing, so you can just take the ones you like.
 
-| Mod | What it does |
-| --- | --- |
-| [Agent Monitor](mods/agent-monitor) | A progress bar above the prompt that fills as Claude works through a task, and a panel with the plan and every subagent's model, context use, estimated cost and run time. |
-| [Readable Layout](mods/readable-layout) | Lays the terminal out like a conversation: your messages and Claude's answers in labeled boxes, Claude's work as quiet lines between them, bold text in color so it stands out, and a rule at the end of every turn. |
+## What's in here
 
-## Skins
+### Mods
 
-| Skin | What it does |
-| --- | --- |
-| [Ember](skins/ember) | A warm, low-glare dark theme with clear levels of emphasis, so you can tell at a glance what to read first. Comes with a matching Windows Terminal look and the JetBrains Mono font. |
+**[Agent Monitor](mods/agent-monitor).** I wanted to see where Claude is in a task without reading through everything, so this puts a progress bar above the prompt that fills up as Claude finishes each step. It also has a panel that shows every subagent Claude starts: which model it's on, how much context it's using, roughly what it costs and how long it's been running.
+
+**[Readable Layout](mods/readable-layout).** The terminal used to feel like one long wall of text to me. This puts my messages and Claude's answers in their own labeled boxes, turns Claude's little in-between notes into quiet lines, and draws a line at the end of every turn so you can see where one exchange ends. It also makes bold text teal, because in the terminal bold looked almost the same as normal text.
+
+### Skins
+
+**[Ember](skins/ember).** Claude Code's default dark theme was either too bright or too faint for me, with nothing in between. Ember is a warmer, softer dark theme where you can tell what's important just by looking. It also comes with a matching Windows Terminal setup with the JetBrains Mono font, better spacing and real bold text.
+
+## Does it work on Mac and Linux?
+
+Mostly, yes. Both mods and the Ember theme work anywhere Claude Code runs, because they only use Claude Code's own features and never touch the operating system.
+
+The one Windows-only part is Ember's terminal setup: the install script, the font and the Windows Terminal colors. On a Mac or Linux you still get the Ember theme inside Claude Code. You just set up your terminal's font and colors yourself. Use a terminal that can show full colors, like iTerm2, Ghostty or WezTerm, or the colors will come out slightly off.
+
+Also, Readable Layout only changes the terminal. The desktop app, VS Code and mobile already lay things out their own way, so it leaves those alone.
+
+I've only tested all of this on Windows though, so if something looks weird on your machine, please open an issue.
 
 ## Installing
 
-Type this at the Claude Code prompt in a terminal, using the name from the tables above:
+Type this at the Claude Code prompt, swapping in whichever one you want (`agent-monitor`, `readable-layout` or `ember`):
 
 ```
 /plugin install agent-monitor --marketplace GarvitNangru/claude-code-mods
 ```
 
-Claude Code asks whether to add this repository as a marketplace. Answer `y`, then pick a scope. The user scope loads it in every session from then on. A mod starts working right away, with no restart needed. For a skin, run `/theme` afterwards and pick it from the list. Some skins also have a terminal part, which their own page explains.
+It'll ask if you want to add this repo as a marketplace. Say `y` and pick a scope. The user scope loads it in every session from then on. Mods start working right away, no restart needed. For a skin, run `/theme` afterwards and pick it from the list. Ember also has the terminal part, which its own page explains.
 
-If you prefer to add the marketplace first and then browse what's in it:
+If you'd rather add the marketplace first and then look around:
 
 ```
 /plugin marketplace add GarvitNangru/claude-code-mods
 /plugin install agent-monitor@garvit-mods
 ```
 
-To pick up a newer version later, run `claude plugin update agent-monitor@garvit-mods` and then `/reload-plugins` in an open session. To remove one, run `/plugin uninstall agent-monitor@garvit-mods`.
+To get a newer version later, run `claude plugin update agent-monitor@garvit-mods` and then `/reload-plugins` in an open session. To get rid of one, run `/plugin uninstall agent-monitor@garvit-mods`.
 
-## Running one from a clone
+## Trying one from a clone
 
-This is handy if you want to change a mod or skin, or try one before installing it:
+This is handy if you want to change something or try a mod before installing it:
 
 ```
 git clone https://github.com/GarvitNangru/claude-code-mods.git
 claude --plugin-dir claude-code-mods/mods/agent-monitor
 ```
 
-To load cloned folders in every session, the desktop app included, list them in the `env` block of `~/.claude/settings.json`. Separate several folders with `;` on Windows and `:` on macOS and Linux:
+If you want cloned folders loaded in every session, the desktop app included, put them in the `env` block of `~/.claude/settings.json`. Separate them with `;` on Windows and `:` on Mac and Linux:
 
 ```json
 {
@@ -53,13 +64,15 @@ To load cloned folders in every session, the desktop app included, list them in 
 }
 ```
 
-A mod loaded this way reloads whenever you save one of its files, which makes it the easiest way to work on one.
+That's how I run them myself. A mod loaded this way reloads every time you save one of its files, which makes it really easy to work on.
 
-## A note on compatibility
+## Heads up
 
-The mods are built on Claude Code's function hooks, and the skins on its custom themes. Both are still new and can change between releases. Everything here is developed and tested against Claude Code 2.1.292. If something stops showing up after an update, a change in Claude Code is the likely cause. Please open an issue if that happens.
+The mods are built on Claude Code's function hooks and the skins on its custom themes. Both are pretty new and could change between releases. I built and tested everything on Claude Code 2.1.292, so if something stops showing up after an update, that's probably why. Let me know in an issue if it happens.
 
-## What's in the repository
+## How the repo is laid out
+
+If you want to poke around:
 
 ```
 .claude-plugin/marketplace.json   the list that /plugin reads
@@ -73,15 +86,15 @@ mods/<name>/
 skins/<name>/
   .claude-plugin/plugin.json      the skin's name, version and description
   themes/<name>.json              the Claude Code theme
-  windows-terminal/               the matching terminal look and its installer, if any
+  windows-terminal/               the matching terminal look and its installer
   README.md                       what the skin changes and how to install it
 ```
 
-## Adding a new mod or skin
+## Adding your own
 
-1. Create `mods/<name>/` or `skins/<name>/` with the files above. The quickest start is to ask Claude Code to build it; it knows the layout.
-2. Add an entry for it to `.claude-plugin/marketplace.json` and a row to the right table at the top of this file.
-3. Check it before committing:
+1. Make a `mods/<name>/` or `skins/<name>/` folder with the files above. Honestly, the easiest way is to just ask Claude Code to build it. It knows the layout.
+2. Add it to `.claude-plugin/marketplace.json` and to the list at the top of this file.
+3. Check it before you commit:
 
    ```
    claude plugin validate .
@@ -91,4 +104,4 @@ skins/<name>/
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE), so do whatever you want with it.
