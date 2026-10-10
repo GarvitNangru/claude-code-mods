@@ -1,0 +1,13 @@
+{
+  "name": "ember",
+  "version": "0.1.0",
+  "description": "A warm, low-glare dark skin for Claude Code: a theme with clear levels of emphasis, plus a matching Windows Terminal look.",
+  "author": {
+    "name": "Garvit Nangru",
+    "url": "https://github.com/GarvitNangru"
+  },
+  "homepage": "https://github.com/GarvitNangru/claude-code-mods/tree/main/skins/ember",
+  "repository": "https://github.com/GarvitNangru/claude-code-mods",
+  "license": "MIT",
+  "keywords": ["theme", "skin", "dark", "windows-terminal", "readability"]
+}

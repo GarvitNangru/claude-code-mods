@@ -5,13 +5,18 @@
     "url": "https://github.com/GarvitNangru"
   },
   "metadata": {
-    "description": "Mods for Claude Code: small add-ons that change what you see and can do in the interface."
+    "description": "Mods and skins for Claude Code: add-ons that change what you see and can do, and themes that change how it looks."
   },
   "plugins": [
     {
       "name": "agent-monitor",
       "source": "./mods/agent-monitor",
       "description": "A progress bar that fills as Claude works through a task, plus a panel with the plan and every subagent."
+    },
+    {
+      "name": "ember",
+      "source": "./skins/ember",
+      "description": "A warm, low-glare dark skin with clear levels of emphasis, plus a matching Windows Terminal look."
     }
   ]
 }

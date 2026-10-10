@@ -1,0 +1,38 @@
+{
+  "scheme": {
+    "name": "Ember",
+    "background": "#1C1B1A",
+    "foreground": "#E3DED6",
+    "cursorColor": "#D97757",
+    "selectionBackground": "#4A3F36",
+    "black": "#2B2926",
+    "red": "#E07A6E",
+    "green": "#8DBF7E",
+    "yellow": "#E3BB6A",
+    "blue": "#8AA8E6",
+    "purple": "#C49BD6",
+    "cyan": "#79C2BB",
+    "white": "#CFC9BF",
+    "brightBlack": "#75706A",
+    "brightRed": "#F09488",
+    "brightGreen": "#A8D69A",
+    "brightYellow": "#F0D08E",
+    "brightBlue": "#A8C0F2",
+    "brightPurple": "#D7B6E6",
+    "brightCyan": "#9AD8D2",
+    "brightWhite": "#F5F1EA"
+  },
+  "theme": {
+    "name": "Ember",
+    "window": { "applicationTheme": "dark" },
+    "tabRow": { "background": "#141312FF", "unfocusedBackground": "#141312FF" },
+    "tab": { "background": "terminalBackground", "unfocusedBackground": "#00000000" }
+  },
+  "profile": {
+    "colorScheme": "Ember",
+    "font": { "face": "Cascadia Mono", "size": 12, "cellHeight": "1.25" },
+    "padding": "16, 12",
+    "intenseTextStyle": "bold",
+    "cursorShape": "bar"
+  }
+}
