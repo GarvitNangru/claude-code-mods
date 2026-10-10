@@ -1,6 +1,6 @@
 {
   "name": "readable-layout",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Lays out the terminal transcript so it reads like a conversation: your messages and Claude's answers in labeled boxes, Claude's work as quiet lines between them, bold text in color, and a rule at the end of every turn.",
   "author": {
     "name": "Garvit Nangru",
@@ -21,7 +21,7 @@
     "bold": {
       "type": "string",
       "title": "Bold text",
-      "description": "color draws bold text in Claude's accent color; highlight puts a soft background behind it; off leaves it plain bold",
+      "description": "color draws bold text in a soft teal; highlight puts a soft background behind it; off leaves it plain bold",
       "default": "color",
       "options": ["color", "highlight", "off"]
     }

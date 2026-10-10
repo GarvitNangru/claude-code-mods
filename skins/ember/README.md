@@ -16,7 +16,7 @@ Ember fixes both halves.
 | Secondary | Tool output, file names, metadata | 6.4:1, a warm grey you can still read comfortably |
 | Tertiary | Hints, borders, placeholders | 3.2:1, visible but out of the way |
 
-Your own messages sit on a slightly lighter block, so you can find where each exchange starts when you scroll back. Claude's orange stays as the accent, and success, error and warning colors are softened to match the palette. Diffs keep their green and red, just less saturated.
+Your own messages sit on a slightly lighter block, so you can find where each exchange starts when you scroll back. Claude's orange stays as the accent, and success, error and warning colors are softened to match the palette. Cyan becomes a soft teal (#8FD1C4), which [Readable Layout](../../mods/readable-layout) uses for bold text. Diffs keep their green and red, just less saturated.
 
 **In Windows Terminal (the look).** A matching color scheme and the [JetBrains Mono](https://www.jetbrains.com/lp/mono/) font, which is designed for reading code: tall lowercase letters, clear differences between `0` and `O` or `1`, `l` and `I`, at 12 pt with 20% more line height. It uses the NL version, which shows `!=` and `->` exactly as typed instead of merging them into symbols. On top of that: comfortable padding around the text, real bold for bold text, and a tab bar that blends into the window.
 

@@ -5,7 +5,7 @@ import type { On, PromptOrigin } from 'claude-code'
 const ANSWER = 'Both are done.\n\n- **Agent Monitor** is pushed\n- **Ember** is applied'
 const PLAIN_ANSWER = 'Both are done.\n\n- Agent Monitor is pushed\n- Ember is applied'
 const NOTE = 'Checking the config first:'
-const ACCENT = { bold: true, color: 'claudeShimmer' }
+const ACCENT = { bold: true, color: 'cyan_FOR_SUBAGENTS_ONLY' }
 const PLUGIN = 'readable-layout'
 
 function engineBeneath(on: On): void {

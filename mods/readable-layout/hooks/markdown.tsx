@@ -21,7 +21,8 @@ type Chunk = { start: number; end: number; blocks?: Block[] }
 type Found = { span: Span; end: number } | undefined
 
 const STRONG_STYLE: Record<Exclude<Emphasis, 'off'>, TextProps> = {
-  color: { bold: true, color: 'claudeShimmer' },
+  // The one cool accent every built-in theme defines in light, dark and ANSI variants, clear of Claude's orange.
+  color: { bold: true, color: 'cyan_FOR_SUBAGENTS_ONLY' },
   highlight: { bold: true, backgroundColor: 'selectionBg' },
 }
 

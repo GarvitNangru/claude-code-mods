@@ -31,7 +31,7 @@ Before                                          After
 
 - **Your messages** sit in a box labeled **You**, in your theme's blue.
 - **Claude's answers** sit in a box labeled **Claude**, in Claude's orange. Anything longer than a line or two counts as an answer. Inside the box it renders as before: headings, lists, tables, code blocks and links.
-- **Bold text stands out.** Claude Code draws bold text in the same color as everything else, only thicker, and at terminal font sizes that is easy to miss. Readable Layout draws it bold and in a soft peach, Claude's accent color, so key words and the lead-in of each list item catch your eye. Inline `code` keeps its own blue.
+- **Bold text stands out.** Claude Code draws bold text in the same color as everything else, only thicker, and at terminal font sizes that is easy to miss. Readable Layout draws it bold and in a soft teal, so key words and the lead-in of each list item catch your eye. Teal sits opposite Claude's orange on the color wheel, so bold text never blends into the orange boxes and labels, and inline `code` keeps its own blue.
 - **Claude's short notes** between steps become quiet, indented lines with a blank line above each one, so every note sits with the step it describes.
 - **Tool activity** ("Read 1 file", "Searched for 1 pattern") keeps Claude Code's own quiet style, so you can skim past it.
 - **Each turn ends with a rule** across the screen that shows how long it took, so you can see where one exchange stops and the next begins.
@@ -47,8 +47,8 @@ Notifications from background tasks, messages from other agents, permission prom
 
 `Bold text` has three:
 
-- `color` (the default) draws bold text in your theme's accent shimmer color, a soft peach in the dark themes and Ember.
-- `highlight` puts a soft background behind bold text, like a marker pen. Pick this on a light theme, where the peach is too pale to read comfortably.
+- `color` (the default) draws bold text in your theme's cyan: a soft teal in Ember, a deeper cyan in Claude Code's own dark and light themes.
+- `highlight` puts a soft background behind bold text, like a marker pen, if you'd rather keep the text color unchanged.
 - `off` leaves bold text exactly as Claude Code draws it.
 
 For a mod loaded from a folder, set them in `~/.claude/settings.json` instead:
