@@ -46,7 +46,7 @@ In the Claude Code desktop app, the bar and the subagent rows are drawn as graph
 
 Claude Code doesn't keep a record of how much of a task is done, so the mod gives Claude a small tool called `progress`. Claude calls it once with its plan, then again each time it finishes a step. The mod also adds two sentences to Claude's instructions explaining when to use it.
 
-- In the transcript, each call shows as one dim line, such as `▸ Plan · temps.py module + tests · 4 steps`, instead of a full tool block.
+- In the transcript, the plan shows as one dim line, such as `▸ Plan · temps.py module + tests · 4 steps`, instead of a full tool block. The step updates after it add nothing there, since the bar already shows them.
 - You're never asked for permission to run it, because it only draws the bar. If you add a rule that denies the tool, your rule wins.
 - It costs a little: the tool and the instructions add a few hundred tokens to each request (they are cached), and each step adds one short tool call.
 - Claude decides what counts as a step, and occasionally skips the bar on a borderline task.

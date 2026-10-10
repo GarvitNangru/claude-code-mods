@@ -141,7 +141,7 @@ describe('plan', () => {
     expect((await compose(['Read'])).sections.map(s => s.id)).toEqual(['intro'])
   })
 
-  test('shows the plan as a checklist in the panel and its calls as one line', async ($, on) => {
+  test('shows the plan as a checklist in the panel, its first call as one line and later calls not at all', async ($, on) => {
     mock.clock(on, { now: 0 })
     engineBeneath(on)
     await progress($, { title: 'Rename mod', steps: STEPS, done: 1 })
@@ -170,6 +170,15 @@ describe('plan', () => {
       })
       expect((await row.find({ type: 'Text' }))?.text).toBe('▸ Plan · Rename mod · 4 steps')
       await row.unmount()
+
+      const update = await $.ui.mount({
+        plugin: 'agent-monitor',
+        surface,
+        component: 'ToolUse',
+        props: { tool_use_id: 'p2', tool: PROGRESS, input: { done: 2 }, isRunning: false, isErrored: false, isInterrupted: false },
+      })
+      expect(await update.find({ type: 'Text' })).toBeUndefined()
+      await update.unmount()
     }
   })
 })

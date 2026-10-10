@@ -1,0 +1,22 @@
+{
+  "name": "readable-layout",
+  "version": "0.1.0",
+  "description": "Lays out the terminal transcript so it reads like a conversation: your messages and Claude's answers in labeled boxes, Claude's work as quiet lines between them, and a rule at the end of every turn.",
+  "author": {
+    "name": "Garvit Nangru",
+    "url": "https://github.com/GarvitNangru"
+  },
+  "homepage": "https://github.com/GarvitNangru/claude-code-mods/tree/main/mods/readable-layout",
+  "repository": "https://github.com/GarvitNangru/claude-code-mods",
+  "license": "MIT",
+  "keywords": ["readability", "layout", "terminal", "transcript", "boxes"],
+  "userConfig": {
+    "boxes": {
+      "type": "string",
+      "title": "Claude text to box",
+      "description": "answers boxes replies of more than a line or two and shows one-line notes as quiet lines; all boxes everything Claude writes",
+      "default": "answers",
+      "options": ["answers", "all"]
+    }
+  }
+}

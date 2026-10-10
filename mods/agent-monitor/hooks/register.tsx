@@ -200,11 +200,10 @@ const runMeta = (r: AgentRun): string =>
 const runStats = (r: AgentRun, at: number): string =>
   `ctx ${fmtTokens(r.contextTokens)} (${ctxPct(r)}%) · ${fmtCost(r.costUsd)} · ${fmtTime(endOf(r, at) - r.startedAt)}`
 
-const progressRow = (input: unknown): string => {
-  const { title, steps, done } = (input ?? {}) as ProgressInput
-  if (Array.isArray(steps) && steps.length)
-    return `Plan · ${typeof title === 'string' && title ? `${title} · ` : ''}${steps.length} steps`
-  return `Progress · ${typeof done === 'number' ? done : '?'} done`
+const planRow = (input: unknown): string | null => {
+  const { title, steps } = (input ?? {}) as ProgressInput
+  if (!Array.isArray(steps) || !steps.length) return null
+  return `Plan · ${typeof title === 'string' && title ? `${title} · ` : ''}${steps.length} steps`
 }
 
 const textBar = (ratio: number, width: number): string => {
@@ -477,11 +476,15 @@ export const register: Register = on => {
   })
 
   on('ui.render', { component: 'ToolUse', props: { tool: PROGRESS_TOOL } }, ($, e) => {
-    const { Text } = $.ui.resolve(e)
+    const { Box, Text } = $.ui.resolve(e)
+    const row = planRow(e.props.input)
+    if (!row) return <Box />
     return (
-      <Text dimColor wrap="truncate-end">
-        ▸ {progressRow(e.props.input)}
-      </Text>
+      <Box paddingLeft={2}>
+        <Text dimColor wrap="truncate-end">
+          ▸ {row}
+        </Text>
+      </Box>
     )
   })
 

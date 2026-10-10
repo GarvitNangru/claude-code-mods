@@ -30,7 +30,7 @@
   },
   "profile": {
     "colorScheme": "Ember",
-    "font": { "face": "Cascadia Mono", "size": 12, "cellHeight": "1.25" },
+    "font": { "face": "JetBrains Mono NL", "size": 12, "cellHeight": "1.2" },
     "padding": "16, 12",
     "intenseTextStyle": "bold",
     "cursorShape": "bar"

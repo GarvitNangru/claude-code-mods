@@ -16,9 +16,11 @@ Ember fixes both halves.
 | Secondary | Tool output, file names, metadata | 6.4:1, a warm grey you can still read comfortably |
 | Tertiary | Hints, borders, placeholders | 3.2:1, visible but out of the way |
 
-Your own messages sit on a slightly lighter block, so you can find where each exchange starts when you scroll back. For even more separation, pair it with the [Boxed Replies](../../mods/boxed-replies) mod, which draws Claude's answers inside boxes. Claude's orange stays as the accent, and success, error and warning colors are softened to match the palette. Diffs keep their green and red, just less saturated.
+Your own messages sit on a slightly lighter block, so you can find where each exchange starts when you scroll back. Claude's orange stays as the accent, and success, error and warning colors are softened to match the palette. Diffs keep their green and red, just less saturated.
 
-**In Windows Terminal (the look).** A matching color scheme, Cascadia Mono at 12 pt with 25% more line height, comfortable padding around the text, real bold for bold text, and a tab bar that blends into the window.
+**In Windows Terminal (the look).** A matching color scheme and the [JetBrains Mono](https://www.jetbrains.com/lp/mono/) font, which is designed for reading code: tall lowercase letters, clear differences between `0` and `O` or `1`, `l` and `I`, at 12 pt with 20% more line height. It uses the NL version, which shows `!=` and `->` exactly as typed instead of merging them into symbols. On top of that: comfortable padding around the text, real bold for bold text, and a tab bar that blends into the window.
+
+Ember changes colors and type. To also change how a conversation is laid out (your messages and Claude's answers in labeled boxes, Claude's work as quiet lines, a rule at the end of each turn), add the [Readable Layout](../../mods/readable-layout) mod. The two are designed to work together.
 
 ## Installing
 
@@ -40,7 +42,13 @@ This part changes Windows Terminal's own settings, so it's a separate step. From
 powershell -ExecutionPolicy Bypass -File skins\ember\windows-terminal\install.ps1
 ```
 
-It adds the Ember color scheme and window theme, and applies the font, spacing and colors to your **Windows PowerShell** profile. Windows Terminal picks up the change immediately, with no restart needed. To style a different profile, pass its name: `-ProfileName "PowerShell"`.
+It does three things:
+
+1. Installs JetBrains Mono for your Windows account, if you don't have it yet. It downloads the official release from JetBrains' GitHub page and needs no admin rights. Pass `-SkipFont` to keep Cascadia Mono instead.
+2. Adds the Ember color scheme and window theme.
+3. Applies the font, spacing and colors to your **Windows PowerShell** profile. To style a different profile, pass its name: `-ProfileName "PowerShell"`.
+
+Colors and spacing change immediately. If the font doesn't switch, close and reopen Windows Terminal.
 
 Before changing anything, the script saves a backup of your settings next to the original, and it prints the one command that puts the backup back. Running it again is safe; it replaces Ember's settings rather than adding them twice.
 

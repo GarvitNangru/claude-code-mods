@@ -1,6 +1,6 @@
 {
   "name": "agent-monitor",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A progress bar above the prompt that fills as Claude works through a task, and a panel with the plan and every subagent's model, context use, estimated cost and run time.",
   "author": {
     "name": "Garvit Nangru",

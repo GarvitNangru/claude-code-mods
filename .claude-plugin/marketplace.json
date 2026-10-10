@@ -14,14 +14,14 @@
       "description": "A progress bar that fills as Claude works through a task, plus a panel with the plan and every subagent."
     },
     {
-      "name": "boxed-replies",
-      "source": "./mods/boxed-replies",
-      "description": "Draws Claude's answers in the terminal inside rounded boxes, apart from tool calls and short notes."
+      "name": "readable-layout",
+      "source": "./mods/readable-layout",
+      "description": "Lays the terminal out like a conversation: labeled boxes for you and Claude, quiet lines for Claude's work, a rule after every turn."
     },
     {
       "name": "ember",
       "source": "./skins/ember",
-      "description": "A warm, low-glare dark skin with clear levels of emphasis, plus a matching Windows Terminal look."
+      "description": "A warm, low-glare dark skin with clear levels of emphasis, plus a matching Windows Terminal look and the JetBrains Mono font."
     }
   ]
 }
