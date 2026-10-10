@@ -30,7 +30,8 @@ Before                                          After
 ## What changes
 
 - **Your messages** sit in a box labeled **You**, in your theme's blue.
-- **Claude's answers** sit in a box labeled **Claude**, in Claude's orange. Anything longer than a line or two counts as an answer. Inside the box it renders exactly as before: headings, lists, tables, code blocks and links.
+- **Claude's answers** sit in a box labeled **Claude**, in Claude's orange. Anything longer than a line or two counts as an answer. Inside the box it renders as before: headings, lists, tables, code blocks and links.
+- **Bold text stands out.** Claude Code draws bold text in the same color as everything else, only thicker, and at terminal font sizes that is easy to miss. Readable Layout draws it bold and in a soft peach, Claude's accent color, so key words and the lead-in of each list item catch your eye. Inline `code` keeps its own blue.
 - **Claude's short notes** between steps become quiet, indented lines with a blank line above each one, so every note sits with the step it describes.
 - **Tool activity** ("Read 1 file", "Searched for 1 pattern") keeps Claude Code's own quiet style, so you can skim past it.
 - **Each turn ends with a rule** across the screen that shows how long it took, so you can see where one exchange stops and the next begins.
@@ -44,16 +45,23 @@ Notifications from background tasks, messages from other agents, permission prom
 - `answers` (the default) boxes replies of more than a line or two and shows one-line notes as quiet lines.
 - `all` boxes everything Claude writes, notes included.
 
-For a mod loaded from a folder, set it in `~/.claude/settings.json` instead:
+`Bold text` has three:
+
+- `color` (the default) draws bold text in your theme's accent shimmer color, a soft peach in the dark themes and Ember.
+- `highlight` puts a soft background behind bold text, like a marker pen. Pick this on a light theme, where the peach is too pale to read comfortably.
+- `off` leaves bold text exactly as Claude Code draws it.
+
+For a mod loaded from a folder, set them in `~/.claude/settings.json` instead:
 
 ```json
-{ "pluginConfigs": { "readable-layout": { "options": { "boxes": "all" } } } }
+{ "pluginConfigs": { "readable-layout": { "options": { "boxes": "all", "bold": "highlight" } } } }
 ```
 
 ## Good to know
 
 - Only the terminal changes. The desktop app, VS Code and mobile already lay a conversation out on their own, so they're left alone.
 - The box and rule colors come from your theme, so they match whatever theme you use. It's designed alongside the [Ember](../../skins/ember) skin.
+- To color bold text, the mod draws the paragraphs, headings and lists that contain it itself. Everything else is still drawn by Claude Code: code blocks, tables, quotes, and any part of a reply without bold. Bold text inside a table or a quote stays plain bold.
 - It only changes how the transcript is drawn. What you and Claude wrote, and what's saved, stay exactly the same. Ctrl+O still shows the full transcript.
 
 ## Development

@@ -1,4 +1,5 @@
 import type { Register, RenderElement } from 'claude-code'
+import { drawMarkdown, type Emphasis } from './markdown'
 
 const SHORT_NOTE_CHARS = 160
 
@@ -12,6 +13,7 @@ const fmtDuration = (ms: number): string => {
 
 export const register: Register = (on, options) => {
   const boxesAll = options.boxes === 'all'
+  const emphasis: Emphasis = options.bold === 'highlight' || options.bold === 'off' ? options.bold : 'color'
 
   on('ui.render', { component: 'UserMessage' }, ($, e, next) => {
     if (e.surface !== 'terminal' || e.props.origin.kind !== 'composer' || !e.props.text.trim()) return next(e)
@@ -22,17 +24,18 @@ export const register: Register = (on, options) => {
   on('ui.render', { component: 'AssistantMessage' }, ($, e, next) => {
     const text = e.props.text.trim()
     if (e.surface !== 'terminal' || e.props.isSummary || !text) return next(e)
-    const { Box, Text, Markdown } = $.ui.resolve(e)
+    const ui = $.ui.resolve(e)
+    const { Box, Text } = ui
 
     if (!boxesAll && isShortNote(text)) {
       return (
         <Box flexDirection="row" marginTop={1} paddingLeft={2}>
           <Text color="subtle">{'· '}</Text>
-          <Markdown dimColor text={text} />
+          {drawMarkdown(ui, text, emphasis, true)}
         </Box>
       )
     }
-    return framed(Box, Text, 'Claude', 'claude', <Markdown text={text} />)
+    return framed(Box, Text, 'Claude', 'claude', drawMarkdown(ui, text, emphasis))
   })
 
   on('ui.render', { component: 'TurnDuration' }, ($, e, next) => {

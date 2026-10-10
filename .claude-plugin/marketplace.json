@@ -16,7 +16,7 @@
     {
       "name": "readable-layout",
       "source": "./mods/readable-layout",
-      "description": "Lays the terminal out like a conversation: labeled boxes for you and Claude, quiet lines for Claude's work, a rule after every turn."
+      "description": "Lays the terminal out like a conversation: labeled boxes for you and Claude, quiet lines for Claude's work, bold text in color, a rule after every turn."
     },
     {
       "name": "ember",

@@ -7,7 +7,7 @@ Mods and skins for [Claude Code](https://claude.com/claude-code). A mod is a sma
 | Mod | What it does |
 | --- | --- |
 | [Agent Monitor](mods/agent-monitor) | A progress bar above the prompt that fills as Claude works through a task, and a panel with the plan and every subagent's model, context use, estimated cost and run time. |
-| [Readable Layout](mods/readable-layout) | Lays the terminal out like a conversation: your messages and Claude's answers in labeled boxes, Claude's work as quiet lines between them, and a rule at the end of every turn. |
+| [Readable Layout](mods/readable-layout) | Lays the terminal out like a conversation: your messages and Claude's answers in labeled boxes, Claude's work as quiet lines between them, bold text in color so it stands out, and a rule at the end of every turn. |
 
 ## Skins
 
