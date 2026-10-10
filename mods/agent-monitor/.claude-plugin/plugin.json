@@ -1,0 +1,14 @@
+{
+  "name": "agent-monitor",
+  "version": "0.1.0",
+  "description": "See your subagents while they work: a progress bar above the prompt, and a panel with each agent's model, context use, estimated cost and run time.",
+  "author": {
+    "name": "Garvit Nangru",
+    "url": "https://github.com/GarvitNangru"
+  },
+  "homepage": "https://github.com/GarvitNangru/claude-code-mods/tree/main/mods/agent-monitor",
+  "repository": "https://github.com/GarvitNangru/claude-code-mods",
+  "license": "MIT",
+  "keywords": ["subagents", "agents", "progress", "cost", "panel"],
+  "types": "./types/index.d.ts"
+}
