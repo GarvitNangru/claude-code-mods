@@ -1,27 +1,53 @@
 import { atom, read, update } from 'claude-code'
 import type { AgentStatus, EngineInterface, ModelUsage, Register } from 'claude-code'
 
-import type { AgentRun, RunStatus } from '../types'
+import type { AgentRun, Plan, RunStatus } from '../types'
 
 const runs = atom({ plugin: 'agent-monitor', key: 'runs' } as const, [])
 const wave = atom({ plugin: 'agent-monitor', key: 'wave' } as const, { ids: [], isHidden: true })
+const plan = atom({ plugin: 'agent-monitor', key: 'plan' } as const, null)
 const isDoneCollapsed = atom({ plugin: 'agent-monitor', key: 'isDoneCollapsed' } as const, false)
 const now = atom({ plugin: 'agent-monitor', key: 'now' } as const, 0)
 
 const PANE = 'agent-monitor'
+const PROGRESS_TOOL = 'mcp__agent-monitor__progress'
 const MAX_RUNS = 100
 const CLAY = '#D97757'
+const DONE = '#3B9C5F'
+const FAIL = '#D0453F'
 const INK = '#1F1E1D'
 const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
 
-const STATUS_COLOR: Record<RunStatus, string> = {
-  running: CLAY,
-  done: '#3B9C5F',
-  stopped: '#8A8A86',
-  failed: '#D0453F',
-}
+const STATUS_COLOR: Record<RunStatus, string> = { running: CLAY, done: DONE, stopped: '#8A8A86', failed: FAIL }
 
 const STATUS_GLYPH: Record<RunStatus, string> = { running: '●', done: '✓', stopped: '■', failed: '✗' }
+
+const PROGRESS_DESCRIPTION =
+  'Shows the user a progress bar above their prompt for the task you are working on. ' +
+  'For any task that takes three or more steps, call it once you have a plan, with a short `title` and the `steps` in order. ' +
+  'Then call it with `done` (how many steps are finished) each time you finish one, and with the full `steps` again if the plan changes. ' +
+  'Send `done` equal to the number of steps when the task is complete. Skip it for questions and one-step tasks. It only draws the bar.'
+
+const PROGRESS_GUIDANCE =
+  'The user sees a progress bar above their prompt that only moves when you report to it. ' +
+  'When a request will take three or more steps (several files to create or edit, a change plus its tests, a multi-part request), ' +
+  `first call ${PROGRESS_TOOL} with a short title and the steps, then call it with \`done\` after you finish each step. ` +
+  'Skip it for questions and one-step requests.'
+
+const PROGRESS_SCHEMA = {
+  type: 'object',
+  properties: {
+    title: { type: 'string', description: 'The task in a few words, e.g. "Add login page".' },
+    steps: {
+      type: 'array',
+      items: { type: 'string' },
+      description: 'The plan in order, each step a few words. Sending it replaces the plan.',
+    },
+    done: { type: 'integer', minimum: 0, description: 'How many steps are finished.' },
+  },
+}
+
+type ProgressInput = { title?: unknown; steps?: unknown; done?: unknown }
 
 type Price = [input: number, output: number, cacheRead: number, cacheWrite1h: number]
 
@@ -72,6 +98,8 @@ const fmtTime = (ms: number): string => {
   return h ? `${h}:${String(m).padStart(2, '0')}:${ss}` : `${m}:${ss}`
 }
 
+const clip = (s: string, max: number): string => (s.length > max ? `${s.slice(0, Math.max(1, max - 1))}…` : s)
+
 const isLive = (r: AgentRun): boolean => r.status === 'running'
 
 const endOf = (r: AgentRun, at: number): number => r.endedAt ?? Math.max(at, r.startedAt)
@@ -92,20 +120,92 @@ const summarize = (list: AgentRun[], at: number) => {
 
 type Summary = ReturnType<typeof summarize>
 
-const bandColor = (s: Summary): string =>
-  s.running ? STATUS_COLOR.running : s.failed ? STATUS_COLOR.failed : STATUS_COLOR.done
+const isComplete = (p: Plan): boolean => p.done >= p.steps.length
 
-const bandLabel = (s: Summary): string =>
-  s.running ? `${s.finished}/${s.total}` : s.failed ? `${s.failed} of ${s.total} failed` : `${s.total} done`
+const nextPlan = (prev: Plan | null, input: ProgressInput, at: number): Plan | null => {
+  const title = typeof input.title === 'string' ? input.title.trim() : ''
+  const steps = Array.isArray(input.steps) ? input.steps.map(s => String(s).trim()).filter(Boolean) : []
+  const done = typeof input.done === 'number' && Number.isFinite(input.done) ? Math.max(0, Math.round(input.done)) : undefined
 
-const bandStats = (s: Summary): string =>
-  [s.running ? `${s.running} running` : '', fmtCost(s.cost), fmtTime(s.time)].filter(Boolean).join(' · ')
+  if (!prev || (steps.length && (isComplete(prev) || (title && title !== prev.title)))) {
+    if (!steps.length) return prev
+    const d = Math.min(steps.length, done ?? 0)
+    return {
+      title: title || 'Working',
+      steps,
+      done: d,
+      startedAt: at,
+      endedAt: d >= steps.length ? at : undefined,
+      isStale: false,
+      isHidden: false,
+    }
+  }
+
+  const nextSteps = steps.length ? steps : prev.steps
+  const d = Math.min(nextSteps.length, done ?? prev.done)
+  return {
+    ...prev,
+    title: title || prev.title,
+    steps: nextSteps,
+    done: d,
+    endedAt: d >= nextSteps.length ? (prev.endedAt ?? at) : undefined,
+    isStale: false,
+  }
+}
+
+type Band = {
+  title: string
+  ratio: number
+  label: string
+  detail: string
+  color: string
+  glyph: string
+  isLive: boolean
+}
+
+const agentsRunning = (n: number): string => (n ? `${n} agent${n > 1 ? 's' : ''} running` : '')
+
+const planBand = (p: Plan, agents: Summary | null, at: number, isWorking: boolean): Band => {
+  const total = p.steps.length
+  const complete = isComplete(p)
+  const detail = [
+    complete ? `done in ${fmtTime((p.endedAt ?? at) - p.startedAt)}` : (p.steps[p.done] ?? ''),
+    agentsRunning(agents?.running ?? 0),
+    !complete && isWorking ? fmtTime(at - p.startedAt) : '',
+  ]
+  return {
+    title: p.title,
+    ratio: total ? p.done / total : 0,
+    label: `${p.done}/${total}`,
+    detail: detail.filter(Boolean).join(' · '),
+    color: complete ? DONE : CLAY,
+    glyph: complete ? '✓' : '●',
+    isLive: !complete,
+  }
+}
+
+const waveBand = (s: Summary): Band => ({
+  title: 'Agents',
+  ratio: s.total ? s.finished / s.total : 0,
+  label: s.running ? `${s.finished}/${s.total}` : s.failed ? `${s.failed} of ${s.total} failed` : `${s.total} done`,
+  detail: [s.running ? `${s.running} running` : '', fmtCost(s.cost), fmtTime(s.time)].filter(Boolean).join(' · '),
+  color: s.running ? CLAY : s.failed ? FAIL : DONE,
+  glyph: s.running ? '●' : s.failed ? '✗' : '✓',
+  isLive: s.running > 0,
+})
 
 const runMeta = (r: AgentRun): string =>
   [r.type, modelName(r.model), r.effort, `${r.steps} steps`].filter(Boolean).join(' · ')
 
 const runStats = (r: AgentRun, at: number): string =>
   `ctx ${fmtTokens(r.contextTokens)} (${ctxPct(r)}%) · ${fmtCost(r.costUsd)} · ${fmtTime(endOf(r, at) - r.startedAt)}`
+
+const progressRow = (input: unknown): string => {
+  const { title, steps, done } = (input ?? {}) as ProgressInput
+  if (Array.isArray(steps) && steps.length)
+    return `Plan · ${typeof title === 'string' && title ? `${title} · ` : ''}${steps.length} steps`
+  return `Progress · ${typeof done === 'number' ? done : '?'} done`
+}
 
 const textBar = (ratio: number, width: number): string => {
   const filled = Math.round(width * Math.min(1, Math.max(0, ratio)))
@@ -114,10 +214,7 @@ const textBar = (ratio: number, width: number): string => {
 
 const xml = (s: string): string => s.replace(/[&<>"]/g, c => `&#${c.charCodeAt(0)};`)
 
-const fit = (s: string, maxPx: number, size: number): string => {
-  const max = Math.max(1, Math.floor(maxPx / (size * 0.56)))
-  return s.length > max ? `${s.slice(0, max - 1)}…` : s
-}
+const fit = (s: string, maxPx: number, size: number): string => clip(s, Math.max(1, Math.floor(maxPx / (size * 0.58))))
 
 const SVG_CSS = `<style>
 .t{fill:#1f1f1f}.s{fill:#6b6b68}.k{fill:#e7e6e2}.ln{stroke:#e4e4e1}
@@ -159,25 +256,25 @@ const statusMark = (x: number, y: number, status: RunStatus): string => {
 const BAND_H = 22
 const BAR_H = 14
 
-const bandSvg = (s: Summary, W: number): string => {
-  const color = bandColor(s)
-  const tail = `${bandLabel(s)} · ${bandStats(s)}`
-  const barX = 84
-  const barW = Math.max(40, W - barX - Math.round(tail.length * 6.6) - 10)
-  const fillW = Math.round(barW * (s.total ? s.finished / s.total : 0))
+const bandSvg = (b: Band, W: number): string => {
+  const title = fit(b.title, Math.max(60, W * 0.3), 13)
+  const barX = Math.round(30 + title.length * 13 * 0.58 + 12)
+  const tail = fit(b.detail ? `${b.label} · ${b.detail}` : b.label, Math.max(60, W - barX - 90), 12)
+  const barW = Math.max(80, W - barX - Math.round(tail.length * 12 * 0.55) - 10)
+  const fillW = Math.round(barW * Math.min(1, b.ratio))
   const y0 = (BAND_H - BAR_H) / 2
   const stripes: string[] = []
   for (let x = -BAR_H - 12; x < fillW; x += 12) stripes.push(`<path d="M${x} ${BAR_H}l${BAR_H} -${BAR_H}h5l-${BAR_H} ${BAR_H}z"/>`)
   return svg(
     W,
     BAND_H,
-    `${crab(0, 3, s.running > 0)}
-<text class="t" x="30" y="${BAND_H / 2 + 4.5}" font-family="${FONT}" font-size="13" font-weight="600">Agents</text>
+    `${crab(0, 3, b.isLive)}
+<text class="t" x="30" y="${BAND_H / 2 + 4.5}" font-family="${FONT}" font-size="13" font-weight="600">${xml(title)}</text>
 <defs><clipPath id="f"><rect width="${fillW}" height="${BAR_H}" rx="${BAR_H / 2}"/></clipPath></defs>
 <g transform="translate(${barX},${y0})">
 <rect class="k" width="${barW}" height="${BAR_H}" rx="${BAR_H / 2}"/>
-<rect width="${fillW}" height="${BAR_H}" rx="${BAR_H / 2}" fill="${color}"/>
-${s.running ? `<g clip-path="url(#f)"><g class="flow" fill="#fff" opacity=".22">${stripes.join('')}</g></g>` : ''}
+<rect width="${fillW}" height="${BAR_H}" rx="${BAR_H / 2}" fill="${b.color}"/>
+${b.isLive ? `<g clip-path="url(#f)"><g class="flow" fill="#fff" opacity=".22">${stripes.join('')}</g></g>` : ''}
 </g>
 <text class="s" x="${barX + barW + 10}" y="${BAND_H / 2 + 4.5}" font-family="${FONT}" font-size="12" font-variant-numeric="tabular-nums">${xml(tail)}</text>`,
   )
@@ -211,26 +308,40 @@ async function togglePane($: EngineInterface): Promise<boolean> {
   }
   const at = await $.clock.now()
   await update($, now, () => at)
-  await $.ui.open({ id: PANE, title: 'Agents' })
+  await $.ui.open({ id: PANE, title: 'Agent Monitor' })
   return true
+}
+
+async function dismissBand($: EngineInterface): Promise<void> {
+  await update($, plan, p => (p ? { ...p, isHidden: true } : p))
+  await update($, wave, w => ({ ...w, isHidden: true }))
 }
 
 const ENDED: Partial<Record<AgentStatus, RunStatus>> = { completed: 'done', failed: 'failed', killed: 'stopped' }
 
-async function tick($: EngineInterface): Promise<void> {
-  const list = await read($, runs)
-  if (!list.some(isLive)) return
-  const at = await $.clock.now()
+async function settleEndedAgents($: EngineInterface, list: AgentRun[], at: number): Promise<void> {
   const ended = new Map<string, RunStatus>()
   for (const a of await $.agent.list()) {
     const status = ENDED[a.status]
     if (status) ended.set(a.id, status)
   }
-  if (list.some(r => isLive(r) && ended.has(r.id))) {
-    await update($, runs, prev =>
-      prev.map(r => (isLive(r) && ended.has(r.id) ? { ...r, status: ended.get(r.id) ?? 'done', endedAt: at } : r)),
-    )
+  if (!list.some(r => isLive(r) && ended.has(r.id))) return
+  await update($, runs, prev =>
+    prev.map(r => (isLive(r) && ended.has(r.id) ? { ...r, status: ended.get(r.id) ?? 'done', endedAt: at } : r)),
+  )
+}
+
+let isTurnRunning = false
+
+async function tick($: EngineInterface): Promise<void> {
+  const list = await read($, runs)
+  const hasLiveAgents = list.some(isLive)
+  if (!hasLiveAgents) {
+    const p = await read($, plan)
+    if (!isTurnRunning || !p || p.isHidden || isComplete(p)) return
   }
+  const at = await $.clock.now()
+  if (hasLiveAgents) await settleEndedAgents($, list, at)
   await update($, now, () => at)
 }
 
@@ -239,15 +350,43 @@ export const register: Register = on => {
     const started = await next(e)
     await $.command.register({
       name: 'agent-monitor',
-      description: 'Show or hide the live panel of subagents: model, context, estimated cost and time',
+      description: "Show or hide the Agent Monitor panel: Claude's current plan and every subagent with its model, context, estimated cost and time",
     })
+    await $.tool.register({ name: 'progress', description: PROGRESS_DESCRIPTION, inputSchema: PROGRESS_SCHEMA })
     $.clock.every(1000, () => void tick($))
     return started
   })
 
   on('command.run', { command: 'agent-monitor' }, async $ => ({
-    text: (await togglePane($)) ? 'Agents panel opened.' : 'Agents panel closed.',
+    text: (await togglePane($)) ? 'Agent Monitor panel opened.' : 'Agent Monitor panel closed.',
   }))
+
+  on('tool.describe', { tool: PROGRESS_TOOL }, async ($, e, next) => ({ ...(await next(e)), isDeferred: false }))
+
+  on('tool.check', { tool: PROGRESS_TOOL }, async ($, e, next) => {
+    const verdict = await next(e)
+    return verdict.decision === 'deny' ? verdict : { decision: 'allow', reason: 'It only draws the progress bar.' }
+  })
+
+  on('prompt.compose', async ($, e, next) => {
+    const composed = await next(e)
+    if (!e.tools.includes(PROGRESS_TOOL)) return composed
+    return { sections: [...composed.sections, { id: 'agent-monitor:progress', text: PROGRESS_GUIDANCE, scope: 'session' }] }
+  })
+
+  on('tool.call', { tool: PROGRESS_TOOL }, async ($, e) => {
+    if (e.agentId) return { result: 'Ignored: the progress bar follows the main task only.' }
+    const at = await $.clock.now()
+    const p = await update($, plan, prev => nextPlan(prev, e as unknown as ProgressInput, at))
+    await update($, now, () => at)
+    if (!p) return { result: 'No plan yet: call it with a title and steps first.' }
+    return { result: `Shown: ${p.done} of ${p.steps.length} steps done.` }
+  })
+
+  on('turn.start', ($, e, next) => {
+    isTurnRunning = true
+    return next(e)
+  })
 
   on('agent.spawn', async ($, e, next) => {
     const started = await next(e)
@@ -302,29 +441,33 @@ export const register: Register = on => {
 
   on('turn.complete', async ($, e, next) => {
     const agentId = e.agentId
-    if (agentId) {
-      const at = await $.clock.now()
-      const status: RunStatus = e.reason === 'answer' ? 'done' : e.reason === 'aborted' ? 'stopped' : 'failed'
-      await update($, runs, list =>
-        list.map(r => {
-          if (r.id !== agentId) return r
-          const usage = r.steps === 0 ? e.usage : undefined
-          return {
-            ...r,
-            status,
-            endedAt: at,
-            ...(usage
-              ? { model: usage.model || r.model, costUsd: costOf(usage.model || r.model, usage), contextTokens: contextOf(usage) }
-              : {}),
-          }
-        }),
-      )
-      await update($, now, () => at)
+    if (!agentId) {
+      isTurnRunning = false
+      return next(e)
     }
+    const at = await $.clock.now()
+    const status: RunStatus = e.reason === 'answer' ? 'done' : e.reason === 'aborted' ? 'stopped' : 'failed'
+    await update($, runs, list =>
+      list.map(r => {
+        if (r.id !== agentId) return r
+        const usage = r.steps === 0 ? e.usage : undefined
+        return {
+          ...r,
+          status,
+          endedAt: at,
+          ...(usage
+            ? { model: usage.model || r.model, costUsd: costOf(usage.model || r.model, usage), contextTokens: contextOf(usage) }
+            : {}),
+        }
+      }),
+    )
+    await update($, now, () => at)
     return next(e)
   })
 
   on('prompt.submit', async ($, e, next) => {
+    const p = await read($, plan)
+    if (p) await update($, plan, prev => (!prev || isComplete(prev) || prev.isStale ? null : { ...prev, isStale: true }))
     const w = await read($, wave)
     if (w.ids.length) {
       const list = await read($, runs)
@@ -333,45 +476,61 @@ export const register: Register = on => {
     return next(e)
   })
 
+  on('ui.render', { component: 'ToolUse', props: { tool: PROGRESS_TOOL } }, ($, e) => {
+    const { Text } = $.ui.resolve(e)
+    return (
+      <Text dimColor wrap="truncate-end">
+        ▸ {progressRow(e.props.input)}
+      </Text>
+    )
+  })
+
+  on('ui.render', { component: 'ToolResult', props: { tool: PROGRESS_TOOL } }, ($, e) => {
+    const { Box } = $.ui.resolve(e)
+    return <Box />
+  })
+
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    if (e.props.hasSurvey) return next(e)
+    const p = await read($, plan)
     const w = await read($, wave)
-    if (e.props.hasSurvey || w.isHidden || !w.ids.length) return next(e)
-    const list = (await read($, runs)).filter(r => w.ids.includes(r.id))
-    if (!list.length) return next(e)
+    const waveRuns = w.isHidden ? [] : (await read($, runs)).filter(r => w.ids.includes(r.id))
+    const at = await read($, now)
+    const agents = waveRuns.length ? summarize(waveRuns, at) : null
+    const band = p && !p.isHidden ? planBand(p, agents, at, e.props.isWorking) : agents ? waveBand(agents) : null
+    if (!band) return next(e)
 
     const ui = $.ui.resolve(e)
     const { Box, Text, Button } = ui
-    const s = summarize(list, await read($, now))
-    const color = bandColor(s)
-    const label = bandLabel(s)
-    const stats = bandStats(s)
     const open = <Button key="open" label="Panel" plain onPress={() => void togglePane($)} />
-    const dismiss = (
-      <Button key="dismiss" label="✕" plain role="dismiss" onPress={() => update($, wave, prev => ({ ...prev, isHidden: true }))} />
-    )
+    const dismiss = <Button key="dismiss" label="✕" plain role="dismiss" onPress={() => dismissBand($)} />
 
     if (e.surface === 'desktop' && 'Svg' in ui) {
       const { Svg } = ui
       const width = Math.max(180, Math.min(1400, (e.props.bodyColumns || 100) * 8 - 120))
       return (
         <Box flexDirection="row" alignItems="center" gap={1}>
-          <Svg source={bandSvg(s, width)} alt={`Agents: ${label}, ${stats}`} width={width} height={BAND_H} />
+          <Svg source={bandSvg(band, width)} alt={`${band.title}: ${band.label}, ${band.detail}`} width={width} height={BAND_H} />
           {open}
           {dismiss}
         </Box>
       )
     }
 
-    const barW = Math.max(6, Math.min(24, e.props.bodyColumns - label.length - stats.length - 28))
+    const cols = e.props.bodyColumns
+    const title = clip(band.title, Math.max(12, Math.floor(cols / 4)))
+    const barW = Math.max(6, Math.min(24, cols - title.length - band.label.length - Math.min(band.detail.length, 30) - 24))
     return (
       <Box flexDirection="row" gap={1}>
-        <Text color={color}>{s.running ? '●' : s.failed ? '✗' : '✓'}</Text>
-        <Text bold>Agents</Text>
-        <Text color={color}>{textBar(s.total ? s.finished / s.total : 0, barW)}</Text>
-        <Text>{label}</Text>
-        <Text dimColor wrap="truncate-end">
-          {stats}
-        </Text>
+        <Text color={band.color}>{band.glyph}</Text>
+        <Text bold>{title}</Text>
+        <Text color={band.color}>{textBar(band.ratio, barW)}</Text>
+        <Text>{band.label}</Text>
+        {band.detail ? (
+          <Text dimColor wrap="truncate-end">
+            {band.detail}
+          </Text>
+        ) : null}
         {open}
         {dismiss}
       </Box>
@@ -381,14 +540,37 @@ export const register: Register = on => {
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const ui = $.ui.resolve(e)
     const { Box, Text, Button } = ui
+    const p = await read($, plan)
     const list = await read($, runs)
     const at = await read($, now)
     const isCollapsed = await read($, isDoneCollapsed)
     const running = list.filter(isLive).reverse()
     const finished = list.filter(r => !isLive(r)).reverse()
     const s = summarize(list, at)
-    const summary = `${s.running} running · ${s.finished} finished · ${fmtCost(s.cost)}`
 
+    const planView = p && (
+      <Box key="plan" flexDirection="column" marginBottom={1}>
+        <Text bold wrap="truncate-end">
+          {p.title} · {p.done}/{p.steps.length}
+        </Text>
+        {p.steps.map((step, i) => (
+          <Text key={`step-${i}`} wrap="truncate-end" dimColor={i < p.done}>
+            <Text color={i < p.done ? DONE : i === p.done ? CLAY : undefined}>{i < p.done ? '✓' : i === p.done ? '▸' : '○'}</Text>{' '}
+            {step}
+          </Text>
+        ))}
+      </Box>
+    )
+    const empty = !p && list.length === 0 && (
+      <Text dimColor>
+        Nothing to show yet. Claude's plan shows up here for tasks with several steps, and subagents as soon as one starts.
+      </Text>
+    )
+    const summary = list.length > 0 && (
+      <Text dimColor wrap="truncate-end">
+        Subagents · {s.running} running · {s.finished} finished · {fmtCost(s.cost)}
+      </Text>
+    )
     const controls = finished.length > 0 && (
       <Box key="controls" flexDirection="row" gap={2}>
         <Button
@@ -400,7 +582,6 @@ export const register: Register = on => {
         <Button key="clear" label="Clear finished" plain onPress={() => update($, runs, prev => prev.filter(isLive))} />
       </Box>
     )
-    const empty = list.length === 0 && <Text dimColor>No subagents yet. They show up here as soon as one starts.</Text>
 
     if (e.surface === 'desktop' && 'Svg' in ui) {
       const { Svg } = ui
@@ -410,8 +591,9 @@ export const register: Register = on => {
       )
       return (
         <Box flexDirection="column">
-          <Text dimColor>{summary}</Text>
+          {planView}
           {empty}
+          {summary}
           {running.map(row)}
           {controls}
           {!isCollapsed && finished.map(row)}
@@ -436,10 +618,9 @@ export const register: Register = on => {
     )
     return (
       <Box flexDirection="column">
-        <Text dimColor wrap="truncate-end">
-          {summary}
-        </Text>
+        {planView}
         {empty}
+        {summary}
         {running.map(row)}
         {controls && <Box marginTop={1}>{controls}</Box>}
         {!isCollapsed && finished.map(row)}

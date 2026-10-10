@@ -1,53 +1,64 @@
 # Agent Monitor
 
-When Claude hands work off to subagents, it's hard to tell how far along they are, which model each one runs on, or how heavy the run is getting. Agent Monitor puts all of that on screen while it happens.
+Claude Code shows a spinner while it works, but nothing that tells you how far along a longer task is. Agent Monitor adds a progress bar above the prompt that fills as Claude finishes each step, and a panel that shows the whole plan and every subagent in the session.
 
 ## The bar above the prompt
 
-As soon as Claude starts a subagent, a bar appears above the prompt:
+When you ask for something that takes a few steps, Claude lays out its plan and the bar appears:
 
 ```
-● Agents ████████████░░░░░░ 2/3 1 running · ≈$0.42 · 1:23 Panel ✕
+● temps.py module + tests ██████████████░░░░░░░░░░ 2/4 Write README.md · 0:41  Panel ✕
 ```
 
-It counts how many agents in the current batch have finished. Agents that start while others are still running join the same batch. When the whole batch is done the bar turns green, and it clears itself once you send your next message. Press ✕ to hide it until the next batch starts, or Panel to open the full list.
+You see the task, how many steps are done, what Claude is working on right now and how long it has been going. If Claude starts subagents along the way, the bar adds how many are running. When the last step is done the bar turns green and shows the total time. It clears itself once you send your next message.
+
+Quick questions and one-step requests don't get a bar, because there is nothing to measure progress against. If Claude only runs subagents without a plan, the bar counts those instead (`Agents 1/3 · 2 running`).
+
+Press ✕ to hide the bar, or Panel to open the full view. You never need a command for the bar; it shows up on its own.
 
 ## The panel
 
-Type `/agent-monitor` (or press Panel on the bar) to open a list of every subagent in the session:
+Type `/agent-monitor`, or press Panel on the bar, to open the side panel. Run the command again to close it. It shows the current plan as a checklist, followed by every subagent in the session:
 
 ```
-1 running · 2 finished · ≈$0.61
+temps.py module + tests · 2/4
+✓ Write temps.py
+✓ Write test_temps.py
+▸ Write README.md
+○ Run tests
+
+Subagents · 1 running · 1 finished · ≈$0.13
 
 ● Scan the auth module
   Explore · Opus 5.5 · high · 14 steps
   ctx 48k (5%) · ≈$0.09 · 1:12
 
-▾ Finished · 2  Clear finished
+▾ Finished · 1  Clear finished
 
 ✓ Read the API docs
   general-purpose · Sonnet 5.5 · medium · 9 steps
   ctx 31k (3%) · ≈$0.04 · 0:48
 ```
 
-Running agents come first and finished ones follow, newest at the top. You can collapse the finished list or clear it. Run `/agent-monitor` again to close the panel.
+In the Claude Code desktop app, the bar and the subagent rows are drawn as graphics, with a small crab that walks while work is going on.
 
-In the Claude Code desktop app, the bar and each row are drawn as graphics, with a small crab that walks while its agent is working.
+## How it knows how far along Claude is
 
-## What the numbers mean
+Claude Code doesn't keep a record of how much of a task is done, so the mod gives Claude a small tool called `progress`. Claude calls it once with its plan, then again each time it finishes a step. The mod also adds two sentences to Claude's instructions explaining when to use it.
+
+- In the transcript, each call shows as one dim line, such as `▸ Plan · temps.py module + tests · 4 steps`, instead of a full tool block.
+- You're never asked for permission to run it, because it only draws the bar. If you add a rule that denies the tool, your rule wins.
+- It costs a little: the tool and the instructions add a few hundred tokens to each request (they are cached), and each step adds one short tool call.
+- Claude decides what counts as a step, and occasionally skips the bar on a borderline task.
+
+## What the subagent numbers mean
 
 - **steps**: how many model requests the agent has made so far.
 - **ctx**: how much context the agent's latest request carried, and what share of the model's context window that is.
 - **≈$**: an estimate worked out from token counts and Anthropic's published API prices, with cache writes counted at the one-hour rate Claude Code uses. It is not a bill. On a Claude subscription you aren't charged per token at all, so treat it as a rough measure of how heavy a run was. The price table is `USD_PER_MTOK` in `hooks/register.tsx`.
 - **time**: wall-clock time since the agent started.
 
-A finished agent is marked ✓, one you interrupted ■, and one that failed ✗.
-
-## Good to know
-
-- The mod only watches what happens. It adds no tools and nothing to the model's context, so it costs nothing in tokens.
-- Everything it shows is kept for the current session only.
-- It works with any subagent: the built-in ones, your own, and those that come with other plugins.
+A finished agent is marked ✓, one you interrupted ■, and one that failed ✗. Everything the mod shows is kept for the current session only.
 
 ## Development
 
@@ -60,4 +71,4 @@ Once Claude Code has loaded the mod from its folder, `tsc -p mods/agent-monitor`
 
 ## Credits
 
-The idea comes from [savvy-progress](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress) by JohnnyVizz, which pairs a similar panel with his savvy-flow skill. Agent Monitor is a smaller, standalone take that works without any other plugin.
+The idea comes from [savvy-progress](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress) by JohnnyVizz, which pairs a similar bar and panel with his savvy-flow skill. Agent Monitor is a smaller, standalone take that works without any other plugin.

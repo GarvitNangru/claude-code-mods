@@ -11,7 +11,7 @@
     {
       "name": "agent-monitor",
       "source": "./mods/agent-monitor",
-      "description": "A progress bar and a live panel for your subagents: model, context use, estimated cost and run time."
+      "description": "A progress bar that fills as Claude works through a task, plus a panel with the plan and every subagent."
     }
   ]
 }

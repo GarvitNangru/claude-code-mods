@@ -6,7 +6,7 @@ Mods for [Claude Code](https://claude.com/claude-code). Each one is a small add-
 
 | Mod | What it does |
 | --- | --- |
-| [Agent Monitor](mods/agent-monitor) | Shows your subagents while they work: a progress bar above the prompt, and a panel with each agent's model, context use, estimated cost and run time. |
+| [Agent Monitor](mods/agent-monitor) | A progress bar above the prompt that fills as Claude works through a task, and a panel with the plan and every subagent's model, context use, estimated cost and run time. |
 
 ## Installing a mod
 
