@@ -2,30 +2,15 @@
 
 In the terminal, a Claude Code session is one long stream. Your message, Claude's short notes ("I'll check the config first"), its tool calls and its final answer all start with the same bullet in the same style. That makes it hard to tell who is talking, what Claude is doing, and which part is the answer you need to read.
 
-Readable Layout gives every part of a turn its own look. Here is the same request in stock Claude Code and with the mod:
+Readable Layout gives every part of a turn its own look. Here is the same conversation in stock Claude Code and with the mod, both with the [Ember](../../skins/ember) skin:
 
-```
-Before                                          After
+**Before**
 
-❯ Count the test files, then read the theme     ╭─ You ──────────────────────────────────────╮
-                                                │ Count the test files, then read the theme  │
-● I'll count the files in the tests folder.     ╰────────────────────────────────────────────╯
+![The conversation in stock Claude Code: the prompt, Claude's notes and its answer all start with the same white dot, and the bold names look like normal text](../../docs/screenshots/readable-layout-before.png)
 
-  Searched for 1 pattern                          · I'll count the files in the tests folder.
+**After**
 
-● Now I'll read the theme file.                   Searched for 1 pattern
-
-  Read 1 file                                     · Now I'll read the theme file.
-
-● - The tests folder has 1 file.                  Read 1 file
-  - The theme is built on the dark base.
-                                                ╭─ Claude ───────────────────────────────────╮
-✻ Cogitated for 8s · done 23:49                 │ - The tests folder has 1 file.             │
-                                                │ - The theme is built on the dark base.     │
-                                                ╰────────────────────────────────────────────╯
-
-                                                ── ✻ Brewed for 20s ──────────────────────────
-```
+![The same conversation with Readable Layout: the prompt and the answer sit in boxes labeled You and Claude, the notes are quiet grey lines, the bold names are teal, and a rule ends the turn](../../docs/screenshots/readable-layout-after.png)
 
 ## What changes
 

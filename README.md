@@ -16,6 +16,18 @@ There are two kinds of things in here. Mods change what you see or can do inside
 
 **[Ember](skins/ember).** Claude Code's default dark theme was either too bright or too faint for me, with nothing in between. Ember is a warmer, softer dark theme where you can tell what's important just by looking. It also comes with a matching Windows Terminal setup with the JetBrains Mono font, better spacing and real bold text.
 
+## Before and after
+
+Here's the same conversation in my terminal, first without Readable Layout and then with it. Both have the Ember skin on.
+
+**Without Readable Layout**
+
+![The conversation in stock Claude Code: the prompt, Claude's notes and its answer all start with the same white dot, and the bold names look like normal text](docs/screenshots/readable-layout-before.png)
+
+**With Readable Layout**
+
+![The same conversation with Readable Layout: the prompt and the answer sit in boxes labeled You and Claude, the notes are quiet grey lines, the bold names are teal, and a rule ends the turn](docs/screenshots/readable-layout-after.png)
+
 ## Does it work on Mac and Linux?
 
 Mostly, yes. Both mods and the Ember theme work anywhere Claude Code runs, because they only use Claude Code's own features and never touch the operating system.
@@ -76,6 +88,7 @@ If you want to poke around:
 
 ```
 .claude-plugin/marketplace.json   the list that /plugin reads
+docs/screenshots/                 the before and after screenshots
 mods/<name>/
   .claude-plugin/plugin.json      the mod's name, version and description
   hooks/hooks.json                points Claude Code at the mod's code
