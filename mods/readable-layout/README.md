@@ -23,6 +23,18 @@ Readable Layout gives every part of a turn its own look. Here is the same conver
 
 Notifications from background tasks, messages from other agents, permission prompts, diffs and command output are left exactly as Claude Code draws them.
 
+## Installing
+
+Type this at the Claude Code prompt:
+
+```
+/plugin install readable-layout --marketplace GarvitNangru/claude-code-mods
+```
+
+It asks whether to add this repo as a marketplace. Say `y` and pick a scope; the user scope loads it in every session. It starts working right away, no restart needed.
+
+To update it later, run `claude plugin update readable-layout@garvit-mods`, then `/reload-plugins` in an open session. To remove it, run `/plugin uninstall readable-layout@garvit-mods`. To run it from a clone instead, see [Trying one from a clone](../../README.md#trying-one-from-a-clone).
+
 ## Settings
 
 `Claude text to box` in `/config` has two choices:

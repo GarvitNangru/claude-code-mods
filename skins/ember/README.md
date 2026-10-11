@@ -32,14 +32,15 @@ Type this at the Claude Code prompt:
 /plugin install ember --marketplace GarvitNangru/claude-code-mods
 ```
 
-Then run `/theme` and pick **Ember**. It's listed as "Ember from ember".
+It asks whether to add this repo as a marketplace. Say `y` and pick a scope; the user scope loads it in every session. Then run `/theme` and pick **Ember**. It's listed as "Ember from ember".
 
 ### The Windows Terminal look
 
-This part changes Windows Terminal's own settings, so it's a separate step. From a copy of this repository, run:
+This part changes Windows Terminal's own settings, so it's a separate step. It's Windows only; on a Mac or Linux, skip it and set your terminal's font and colors yourself. Clone this repository and run the script:
 
 ```
-powershell -ExecutionPolicy Bypass -File skins\ember\windows-terminal\install.ps1
+git clone https://github.com/GarvitNangru/claude-code-mods.git
+powershell -ExecutionPolicy Bypass -File claude-code-mods\skins\ember\windows-terminal\install.ps1
 ```
 
 It does three things:
@@ -53,6 +54,10 @@ Colors and spacing change immediately. If the font doesn't switch, close and reo
 Before changing anything, the script saves a backup of your settings next to the original, and it prints the one command that puts the backup back. Running it again is safe; it replaces Ember's settings rather than adding them twice.
 
 If you'd rather make the change by hand, `windows-terminal/ember.json` holds the three pieces: the color scheme goes in `schemes`, the window theme in `themes`, and the profile values in the profile you use for Claude Code.
+
+### Updating or removing it
+
+To update the theme later, run `claude plugin update ember@garvit-mods`, then `/reload-plugins` in an open session. To remove it, run `/plugin uninstall ember@garvit-mods`. To undo the Windows Terminal part, run the restore command the install script printed.
 
 ## Tuning it
 

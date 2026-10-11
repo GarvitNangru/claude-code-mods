@@ -42,6 +42,18 @@ Subagents · 1 running · 1 finished · ≈$0.13
 
 In the Claude Code desktop app, the bar and the subagent rows are drawn as graphics, with a small crab that walks while work is going on.
 
+## Installing
+
+Type this at the Claude Code prompt:
+
+```
+/plugin install agent-monitor --marketplace GarvitNangru/claude-code-mods
+```
+
+It asks whether to add this repo as a marketplace. Say `y` and pick a scope; the user scope loads it in every session. It starts working right away, no restart needed.
+
+To update it later, run `claude plugin update agent-monitor@garvit-mods`, then `/reload-plugins` in an open session. To remove it, run `/plugin uninstall agent-monitor@garvit-mods`. To run it from a clone instead, see [Trying one from a clone](../../README.md#trying-one-from-a-clone).
+
 ## How it knows how far along Claude is
 
 Claude Code doesn't keep a record of how much of a task is done, so the mod gives Claude a small tool called `progress`. Claude calls it once with its plan, then again each time it finishes a step. The mod also adds two sentences to Claude's instructions explaining when to use it.

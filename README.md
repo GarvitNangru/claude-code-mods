@@ -95,7 +95,7 @@ mods/<name>/
   hooks/register.tsx              the mod itself
   types/index.d.ts                the shape of the state the mod keeps
   tests/                          tests, run with `claude plugin test`
-  README.md                       what the mod does and how to use it
+  README.md                       what the mod does and how to install and use it
 skins/<name>/
   .claude-plugin/plugin.json      the skin's name, version and description
   themes/<name>.json              the Claude Code theme
