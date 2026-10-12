@@ -1,7 +1,7 @@
 {
   "name": "firelight",
-  "version": "0.1.0",
-  "description": "Claude Code themes in all three variants of Firelight, the color palette by ridusaini (Coal, Smoulder and Ash), plus a matching Windows Terminal look and the JetBrains Mono font.",
+  "version": "0.2.0",
+  "description": "Claude Code themes in all three variants of Firelight, the color palette by ridusaini (Coal, Smoulder and Ash). The terminal background and colors follow the theme, and a matching Windows Terminal look and the JetBrains Mono font come with it.",
   "author": {
     "name": "Garvit Nangru",
     "url": "https://github.com/GarvitNangru"

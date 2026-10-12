@@ -16,7 +16,7 @@ There are two kinds of things in here. Mods change what you see or can do inside
 
 **[Ember](skins/ember).** Claude Code's default dark theme was either too bright or too faint for me, with nothing in between. Ember is a warmer, softer dark theme where you can tell what's important just by looking. It also comes with a matching Windows Terminal setup with the JetBrains Mono font, better spacing and real bold text.
 
-**[Firelight](skins/firelight).** Claude Code themes in the three variants of [Firelight](https://github.com/ridusaini/firelight), a color palette by [ridusaini](https://github.com/ridusaini): Coal and Smoulder are dark, Ash is light. It comes with matching Windows Terminal colors and the same font and spacing as Ember.
+**[Firelight](skins/firelight).** Claude Code themes in the three variants of [Firelight](https://github.com/ridusaini/firelight), a color palette by [ridusaini](https://github.com/ridusaini): Coal and Smoulder are dark, Ash is light. Picking one also switches the terminal's background and colors to match while Claude Code is open. It comes with matching Windows Terminal colors and the same font and spacing as Ember.
 
 ## Before and after
 
@@ -102,6 +102,7 @@ skins/<name>/
   .claude-plugin/plugin.json      the skin's name, version and description
   themes/<name>.json              the Claude Code theme, one file per variant
   windows-terminal/               the matching terminal look and its installer
+  hooks/, tests/                  code the skin runs and its tests, if it has any
   README.md                       what the skin changes and how to install it
   NOTICE.md                       credit and license for borrowed work, if any
 ```

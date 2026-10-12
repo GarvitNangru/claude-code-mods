@@ -12,6 +12,8 @@ Firelight is named after the way fire changes color as it grows. Its accents run
 
 Every color comes from the palette. This skin only decides which Firelight color goes where in Claude Code and Windows Terminal. Where the palette doesn't have a color Claude Code needs, the skin mixes one from Firelight's own colors, and [Changes from the palette](#changes-from-the-palette) lists each of those.
 
+![Claude Code with Firelight Coal in Windows Terminal: the prompt on a raised block, an edit with its diff, and a reply with bold labels and inline code, all on Coal's background](../../docs/screenshots/firelight-coal.png)
+
 ## What it changes
 
 **In Claude Code (the themes).** Like [Ember](../ember), text falls into three clear levels, using the shades Firelight suggests for each job:
@@ -36,6 +38,8 @@ Your own messages sit on a raised block (`bg2`, or `bg0` in Ash), so you can fin
 
 Firelight suggests `rose` as the main accent. The skin uses `coral` instead, the palette's closest color to Claude's orange, so Claude still looks like Claude.
 
+**In the terminal around it.** A Claude Code theme only colors Claude Code's own text, so on its own Coal's text would sit on whatever background your terminal has. While a Firelight theme is picked, the skin also switches the terminal's background, text color, cursor and 16 ANSI colors to that variant, so the text is always on the background it was made for. Switching between variants in `/theme` switches the terminal along with it, and picking a theme that isn't Firelight, or quitting Claude Code, gives the terminal its own colors back. This works in terminals that accept the standard color-changing codes (OSC 4, 10, 11 and 12), which most current ones do. I've tested it in Windows Terminal only. If Claude Code is killed instead of quit, the colors stay until you close the tab.
+
 **In Windows Terminal (the look).** All three variants as color schemes, mapped exactly the way Firelight's [suggested terminal colors](https://github.com/ridusaini/firelight/blob/main/resources/suggested-uses.json) lay them out, with a `rose` cursor. The rest matches Ember: the [JetBrains Mono](https://www.jetbrains.com/lp/mono/) NL font at 12 pt with 20% more line height, padding around the text, real bold for bold text, and a tab bar that blends into the window.
 
 The themes change colors only. To also change how a conversation is laid out, add the [Readable Layout](../../mods/readable-layout) mod. It picks up Firelight's colors on its own.
@@ -54,7 +58,7 @@ It asks whether to add this repo as a marketplace. Say `y` and pick a scope; the
 
 ### The Windows Terminal look
 
-This part changes Windows Terminal's own settings, so it's a separate step. It's Windows only; on a Mac or Linux, skip it and set your terminal's colors yourself from `windows-terminal/firelight.json`. Clone this repository and run the script:
+You don't need this part for the colors, since the themes set those themselves. It adds the font, the spacing and the matching tab bar, and makes the terminal Firelight-colored before Claude Code starts too. It changes Windows Terminal's own settings, so it's a separate step, and it's Windows only. Clone this repository and run the script:
 
 ```
 git clone https://github.com/GarvitNangru/claude-code-mods.git
@@ -91,7 +95,7 @@ Firelight's community guidelines ask themes to note any palette changes, so here
 
 ## Tuning it
 
-Each variant is one small JSON file in `themes/`. Each key overrides one color of Claude Code's built-in dark theme, or light theme for Ash, and any key you leave out keeps its default. Colors are `#RRGGBB` hex. The terminal schemes and font settings live in `windows-terminal/firelight.json`; if 12 pt is too small on your screen, change `size`, and if the lines feel too airy, lower `cellHeight` towards `1.1`.
+Each variant is one small JSON file in `themes/`. Each key overrides one color of Claude Code's built-in dark theme, or light theme for Ash, and any key you leave out keeps its default. Colors are `#RRGGBB` hex. The terminal schemes and font settings live in `windows-terminal/firelight.json`, and the colors the skin sets in your terminal while Claude Code runs come from the same schemes. If 12 pt is too small on your screen, change `size`, and if the lines feel too airy, lower `cellHeight` towards `1.1`.
 
 After editing a theme, start a new session, or reselect it in `/theme`, to see the change.
 

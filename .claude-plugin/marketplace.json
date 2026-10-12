@@ -26,7 +26,7 @@
     {
       "name": "firelight",
       "source": "./skins/firelight",
-      "description": "Themes in all three variants of ridusaini's Firelight palette (Coal, Smoulder and Ash), plus matching Windows Terminal schemes and the JetBrains Mono font."
+      "description": "Themes in all three variants of ridusaini's Firelight palette (Coal, Smoulder and Ash) that also set the terminal's background to match, plus Windows Terminal schemes and the JetBrains Mono font."
     }
   ]
 }
