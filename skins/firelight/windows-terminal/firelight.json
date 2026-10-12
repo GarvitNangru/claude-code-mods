@@ -1,0 +1,127 @@
+{
+  "schemes": [
+    {
+      "name": "Firelight Coal",
+      "background": "#232222",
+      "foreground": "#E6D7CD",
+      "cursorColor": "#F06B8A",
+      "selectionBackground": "#4C4B58",
+      "black": "#1B1A19",
+      "red": "#FF7C78",
+      "green": "#99CC78",
+      "yellow": "#F8DC99",
+      "blue": "#8DB6FF",
+      "purple": "#D5A3F5",
+      "cyan": "#62D4C5",
+      "white": "#E6D7CD",
+      "brightBlack": "#777676",
+      "brightRed": "#FF936F",
+      "brightGreen": "#99CC78",
+      "brightYellow": "#FFB57A",
+      "brightBlue": "#C9C6F8",
+      "brightPurple": "#F06B8A",
+      "brightCyan": "#62D4C5",
+      "brightWhite": "#F8EAE0"
+    },
+    {
+      "name": "Firelight Smoulder",
+      "background": "#2E2E2E",
+      "foreground": "#D7CEC8",
+      "cursorColor": "#DD7B8F",
+      "selectionBackground": "#55545E",
+      "black": "#232222",
+      "red": "#EB8B86",
+      "green": "#A2C88B",
+      "yellow": "#F1DDAD",
+      "blue": "#98B7EC",
+      "purple": "#CEAAE6",
+      "cyan": "#81CFC3",
+      "white": "#D7CEC8",
+      "brightBlack": "#848483",
+      "brightRed": "#ED9D83",
+      "brightGreen": "#A2C88B",
+      "brightYellow": "#F1BB90",
+      "brightBlue": "#CAC8ED",
+      "brightPurple": "#DD7B8F",
+      "brightCyan": "#81CFC3",
+      "brightWhite": "#EAE2DC"
+    },
+    {
+      "name": "Firelight Ash",
+      "background": "#F4EEEC",
+      "foreground": "#473E36",
+      "cursorColor": "#B83F5F",
+      "selectionBackground": "#DAD4DE",
+      "black": "#FEF8F6",
+      "red": "#C7504F",
+      "green": "#69974A",
+      "yellow": "#A1884B",
+      "blue": "#6387C9",
+      "purple": "#A476C1",
+      "cyan": "#279B8E",
+      "white": "#473E36",
+      "brightBlack": "#81807F",
+      "brightRed": "#C86746",
+      "brightGreen": "#69974A",
+      "brightYellow": "#BE7C45",
+      "brightBlue": "#8A86B3",
+      "brightPurple": "#B83F5F",
+      "brightCyan": "#279B8E",
+      "brightWhite": "#3A3129"
+    }
+  ],
+  "themes": [
+    {
+      "name": "Firelight Coal",
+      "window": {
+        "applicationTheme": "dark"
+      },
+      "tabRow": {
+        "background": "#1B1A19FF",
+        "unfocusedBackground": "#1B1A19FF"
+      },
+      "tab": {
+        "background": "terminalBackground",
+        "unfocusedBackground": "#00000000"
+      }
+    },
+    {
+      "name": "Firelight Smoulder",
+      "window": {
+        "applicationTheme": "dark"
+      },
+      "tabRow": {
+        "background": "#232222FF",
+        "unfocusedBackground": "#232222FF"
+      },
+      "tab": {
+        "background": "terminalBackground",
+        "unfocusedBackground": "#00000000"
+      }
+    },
+    {
+      "name": "Firelight Ash",
+      "window": {
+        "applicationTheme": "light"
+      },
+      "tabRow": {
+        "background": "#D7D2CFFF",
+        "unfocusedBackground": "#D7D2CFFF"
+      },
+      "tab": {
+        "background": "terminalBackground",
+        "unfocusedBackground": "#00000000"
+      }
+    }
+  ],
+  "profile": {
+    "font": {
+      "face": "JetBrains Mono NL",
+      "size": 12,
+      "cellHeight": "1.2"
+    },
+    "padding": "16, 12",
+    "intenseTextStyle": "bold",
+    "cursorShape": "bar"
+  }
+}

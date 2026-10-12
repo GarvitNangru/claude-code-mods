@@ -22,6 +22,11 @@
       "name": "ember",
       "source": "./skins/ember",
       "description": "A warm, low-glare dark skin with clear levels of emphasis, plus a matching Windows Terminal look and the JetBrains Mono font."
+    },
+    {
+      "name": "firelight",
+      "source": "./skins/firelight",
+      "description": "Themes in all three variants of ridusaini's Firelight palette (Coal, Smoulder and Ash), plus matching Windows Terminal schemes and the JetBrains Mono font."
     }
   ]
 }

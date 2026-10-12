@@ -44,7 +44,7 @@ To update it later, run `claude plugin update readable-layout@garvit-mods`, then
 
 `Bold text` has three:
 
-- `color` (the default) draws bold text in your theme's cyan: a soft teal in Ember, a deeper cyan in Claude Code's own dark and light themes.
+- `color` (the default) draws bold text in your theme's cyan: a soft teal in Ember, verdigris in Firelight, a deeper cyan in Claude Code's own dark and light themes.
 - `highlight` puts a soft background behind bold text, like a marker pen, if you'd rather keep the text color unchanged.
 - `off` leaves bold text exactly as Claude Code draws it.
 

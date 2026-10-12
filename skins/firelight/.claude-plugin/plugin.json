@@ -1,0 +1,20 @@
+{
+  "name": "firelight",
+  "version": "0.1.0",
+  "description": "Claude Code themes in all three variants of Firelight, the color palette by ridusaini (Coal, Smoulder and Ash), plus a matching Windows Terminal look and the JetBrains Mono font.",
+  "author": {
+    "name": "Garvit Nangru",
+    "url": "https://github.com/GarvitNangru"
+  },
+  "homepage": "https://github.com/GarvitNangru/claude-code-mods/tree/main/skins/firelight",
+  "repository": "https://github.com/GarvitNangru/claude-code-mods",
+  "license": "MIT",
+  "keywords": [
+    "theme",
+    "skin",
+    "dark",
+    "light",
+    "firelight",
+    "windows-terminal"
+  ]
+}

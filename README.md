@@ -16,6 +16,8 @@ There are two kinds of things in here. Mods change what you see or can do inside
 
 **[Ember](skins/ember).** Claude Code's default dark theme was either too bright or too faint for me, with nothing in between. Ember is a warmer, softer dark theme where you can tell what's important just by looking. It also comes with a matching Windows Terminal setup with the JetBrains Mono font, better spacing and real bold text.
 
+**[Firelight](skins/firelight).** Claude Code themes in the three variants of [Firelight](https://github.com/ridusaini/firelight), a color palette by [ridusaini](https://github.com/ridusaini): Coal and Smoulder are dark, Ash is light. It comes with matching Windows Terminal colors and the same font and spacing as Ember.
+
 ## Before and after
 
 Here's the same conversation in my terminal, first without Readable Layout and then with it. Both have the Ember skin on.
@@ -30,9 +32,9 @@ Here's the same conversation in my terminal, first without Readable Layout and t
 
 ## Does it work on Mac and Linux?
 
-Mostly, yes. Both mods and the Ember theme work anywhere Claude Code runs, because they only use Claude Code's own features and never touch the operating system.
+Mostly, yes. Both mods and the skins' themes work anywhere Claude Code runs, because they only use Claude Code's own features and never touch the operating system.
 
-The one Windows-only part is Ember's terminal setup: the install script, the font and the Windows Terminal colors. On a Mac or Linux you still get the Ember theme inside Claude Code. You just set up your terminal's font and colors yourself. Use a terminal that can show full colors, like iTerm2, Ghostty or WezTerm, or the colors will come out slightly off.
+The one Windows-only part is the skins' terminal setup: the install script, the font and the Windows Terminal colors. On a Mac or Linux you still get the themes inside Claude Code. You just set up your terminal's font and colors yourself. Use a terminal that can show full colors, like iTerm2, Ghostty or WezTerm, or the colors will come out slightly off.
 
 Also, Readable Layout only changes the terminal. The desktop app, VS Code and mobile already lay things out their own way, so it leaves those alone.
 
@@ -40,13 +42,13 @@ I've only tested all of this on Windows though, so if something looks weird on y
 
 ## Installing
 
-Type this at the Claude Code prompt, swapping in whichever one you want (`agent-monitor`, `readable-layout` or `ember`):
+Type this at the Claude Code prompt, swapping in whichever one you want (`agent-monitor`, `readable-layout`, `ember` or `firelight`):
 
 ```
 /plugin install agent-monitor --marketplace GarvitNangru/claude-code-mods
 ```
 
-It'll ask if you want to add this repo as a marketplace. Say `y` and pick a scope. The user scope loads it in every session from then on. Mods start working right away, no restart needed. For a skin, run `/theme` afterwards and pick it from the list. Ember also has the terminal part, which its own page explains.
+It'll ask if you want to add this repo as a marketplace. Say `y` and pick a scope. The user scope loads it in every session from then on. Mods start working right away, no restart needed. For a skin, run `/theme` afterwards and pick it from the list. Skins also have a terminal part, which each skin's own page explains.
 
 If you'd rather add the marketplace first and then look around:
 
@@ -98,9 +100,10 @@ mods/<name>/
   README.md                       what the mod does and how to install and use it
 skins/<name>/
   .claude-plugin/plugin.json      the skin's name, version and description
-  themes/<name>.json              the Claude Code theme
+  themes/<name>.json              the Claude Code theme, one file per variant
   windows-terminal/               the matching terminal look and its installer
   README.md                       what the skin changes and how to install it
+  NOTICE.md                       credit and license for borrowed work, if any
 ```
 
 ## Adding your own
