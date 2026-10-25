@@ -36,13 +36,18 @@ const mountPrompt = ($: Engine, surface: 'terminal' | 'desktop', text: string, o
 
 const fromEngine = { type: 'Text', text: 'engine:' } as const
 
+const expectFramed = async (ui: Awaited<ReturnType<typeof mountPrompt>>, title: string, color: string) => {
+  expect((await ui.findAll({ type: 'Box' })).some(b => b.props.borderStyle)).toBe(false)
+  const rules = (await ui.findAll({ type: 'Text' })).filter(t => t.props.color === color && t.text.startsWith('──'))
+  expect(rules.map(r => r.text.replace(/─+$/, ''))).toEqual([`── ${title} `, ''])
+  expect((await ui.findAll({ type: 'Text', text: title })).find(t => t.props.bold)?.text).toBe(` ${title} `)
+}
+
 describe('your messages', () => {
-  test('sit in a box labeled You', async ($, on) => {
+  test('sit between rules labeled You, with nothing beside the text', async ($, on) => {
     engineBeneath(on)
     const ui = await mountPrompt($, 'terminal', '  fix the login bug  ')
-    const boxes = await ui.findAll({ type: 'Box' })
-    expect(boxes.some(b => b.props.borderStyle === 'round' && b.props.borderColor === 'suggestion')).toBe(true)
-    expect((await ui.find({ type: 'Text', text: 'You' }))?.text).toBe(' You ')
+    await expectFramed(ui, 'You', 'suggestion')
     expect((await ui.find({ type: 'Text', text: 'login' }))?.text).toBe('fix the login bug')
     expect(await ui.find(fromEngine)).toBeUndefined()
   })
@@ -58,12 +63,10 @@ describe('your messages', () => {
 })
 
 describe("Claude's text", () => {
-  test('an answer sits in a box labeled Claude, rendered as markdown', async ($, on) => {
+  test('an answer sits between rules labeled Claude, rendered as markdown', async ($, on) => {
     engineBeneath(on)
     const ui = await mountReply($, 'terminal', PLAIN_ANSWER)
-    const boxes = await ui.findAll({ type: 'Box' })
-    expect(boxes.some(b => b.props.borderStyle === 'round' && b.props.borderColor === 'claude')).toBe(true)
-    expect((await ui.find({ type: 'Text', text: 'Claude' }))?.text).toBe(' Claude ')
+    await expectFramed(ui, 'Claude', 'claude')
     expect((await ui.find({ type: 'Markdown' }))?.text).toBe(PLAIN_ANSWER)
   })
 
@@ -85,7 +88,7 @@ describe("Claude's text", () => {
   test('with boxes set to all, notes are boxed too', { options: { boxes: 'all' } }, async ($, on) => {
     engineBeneath(on)
     const ui = await mountReply($, 'terminal', NOTE)
-    expect((await ui.findAll({ type: 'Box' })).some(b => b.props.borderColor === 'claude')).toBe(true)
+    await expectFramed(ui, 'Claude', 'claude')
   })
 })
 

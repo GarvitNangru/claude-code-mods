@@ -59,6 +59,7 @@ For a mod loaded from a folder, set them in `~/.claude/settings.json` instead:
 - Only the terminal changes. The desktop app, VS Code and mobile already lay a conversation out on their own, so they're left alone.
 - The box and rule colors come from your theme, so they match whatever theme you use. It's designed alongside the [Ember](../../skins/ember) skin.
 - To color bold text, the mod draws the paragraphs, headings and lists that contain it itself. Everything else is still drawn by Claude Code: code blocks, tables, quotes, and any part of a reply without bold. Bold text inside a table or a quote stays plain bold.
+- The boxes have a line above and below but nothing at the sides, so text you select and copy from the terminal comes out without any border characters.
 - It only changes how the transcript is drawn. What you and Claude wrote, and what's saved, stay exactly the same. Ctrl+O still shows the full transcript.
 
 ## Development

@@ -1,6 +1,6 @@
 {
   "name": "readable-layout",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Lays out the terminal transcript so it reads like a conversation: your messages and Claude's answers in labeled boxes, Claude's work as quiet lines between them, bold text in color, and a rule at the end of every turn.",
   "author": {
     "name": "Garvit Nangru",
